@@ -1,9 +1,13 @@
 /* eslint-disable react/no-children-prop */
 'use client'; // this is a client component
 
+import userContext from '@/context/userContext';
+import useSignUp from '@/hooks/api/useSignUp';
 import useForm from '@/hooks/useForm';
 import { EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect } from 'react';
 import mainLogo from '../../public/mainLogo.png';
 import MainButton from '../mainButton';
 import MainLink from '../mainLink';
@@ -21,12 +25,39 @@ import {
   VisualIdentityWrapper,
 } from '../page.styles';
 export default function SignUp() {
+  const router = useRouter();
   const [form, setForm] = useForm({
     email: '',
-    user: '',
     password: '',
-    repeatPassword: '',
+    confirmPassword: '',
   }) as [SignUpType, Function];
+
+  const { signUpLoading, signUp } = useSignUp();
+  const { userData, setUserData } = useContext(userContext);
+
+  useEffect(() => {
+    if (Object.keys(userData).length !== 0) {
+      router.push('/home');
+    }
+  }, [userData]);
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (
+      JSON.stringify(form.password) !== JSON.stringify(form.confirmPassword)
+    ) {
+      alert('As senhas devem ser iguais!');
+    } else {
+      try {
+        await signUp(form.email, form.password);
+        alert('Inscrito com sucesso! Por favor, faça login.');
+        router.push('/sign-in');
+      } catch (error) {
+        alert('Não foi possível fazer o cadastro!');
+      }
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(e.target);
@@ -36,13 +67,12 @@ export default function SignUp() {
       <VisualIdentityWrapper>
         <TextWrapper>
           <Name>Chaty</Name>
-          <Slogan>Conecting people...</Slogan>
+          <Slogan>Connecting people...</Slogan>
         </TextWrapper>
         <Logo src={mainLogo.src} />
       </VisualIdentityWrapper>
       <FormWrapper>
-        {/* <Form onSubmit={handleSubmission}> */}
-        <Form>
+        <Form onSubmit={submit}>
           <FormTittle>Sign Up:</FormTittle>
           <AllInputs spacing={0}>
             <InputWrap size='lg'>
@@ -84,9 +114,9 @@ export default function SignUp() {
                 children={<LockIcon color='gray.300' />}
               />
               <Input
-                name='repeatPassword'
+                name='confirmPassword'
                 onChange={handleInputChange}
-                value={form.repeatPassword}
+                value={form.confirmPassword}
                 pr='1rem'
                 focusBorderColor='orange'
                 variant='flushed'
@@ -96,8 +126,10 @@ export default function SignUp() {
               />
             </InputWrap>
           </AllInputs>
-          <MainButton>Continue</MainButton>
-          <MainLink href='/'>Already have a account? Sign in!</MainLink>
+          <MainButton isLoading={signUpLoading}>Continue</MainButton>
+          <MainLink href='/' disabled={signUpLoading}>
+            Already have a account? Sign in!
+          </MainLink>
         </Form>
       </FormWrapper>
     </Page>
@@ -108,5 +140,5 @@ export type SignUpType = {
   email: string;
   user: string;
   password: string;
-  repeatPassword: string;
+  confirmPassword: string;
 };

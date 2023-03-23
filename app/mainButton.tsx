@@ -1,7 +1,16 @@
 import { Spinner } from '@chakra-ui/react';
+import { MouseEventHandler, ReactNode } from 'react';
 import styled from 'styled-components';
 
-export default function MainButton({ children, isLoading, onClick }) {
+export default function MainButton({
+  children,
+  isLoading,
+  onClick,
+}: {
+  children: ReactNode;
+  isLoading: boolean;
+  onClick?: MouseEventHandler;
+}) {
   return (
     <StyledButton onClick={onClick} disabled={isLoading}>
       {isLoading ? (
