@@ -1,9 +1,13 @@
 /* eslint-disable react/no-children-prop */
 'use client'; // this is a client component
 
+import userContext from '@/context/userContext';
+import useSignIn from '@/hooks/api/useSignIn';
 import useForm from '@/hooks/useForm';
 import { EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect } from 'react';
 import mainLogo from '../public/mainLogo.png';
 import MainButton from './mainButton';
 import MainLink from './mainLink';
@@ -21,12 +25,33 @@ import {
   VisualIdentityWrapper,
 } from './page.styles';
 export default function SignIn() {
+  const router = useRouter();
   const [form, setForm] = useForm({
     email: '',
-    user: '',
     password: '',
-    repeatPassword: '',
   }) as [SignUpType, Function];
+
+  const { signInLoading, signIn } = useSignIn();
+  const { userData, setUserData } = useContext(userContext);
+
+  useEffect(() => {
+    if (Object.keys(userData).length !== 0) {
+      router.push('/home');
+    }
+  }, [userData]);
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+      const userData = await signIn(form.email, form.password);
+      setUserData(userData);
+      alert('Login realizado com sucesso!');
+      router.push('/home');
+    } catch (err) {
+      alert('Não foi possível fazer o login!');
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(e.target);
@@ -36,13 +61,12 @@ export default function SignIn() {
       <VisualIdentityWrapper>
         <TextWrapper>
           <Name>Chaty</Name>
-          <Slogan>Conecting people...</Slogan>
+          <Slogan>Connecting people...</Slogan>
         </TextWrapper>
         <Logo src={mainLogo.src} />
       </VisualIdentityWrapper>
       <FormWrapper>
-        {/* <Form onSubmit={handleSubmission}> */}
-        <Form>
+        <Form onSubmit={submit}>
           <FormTittle>Login:</FormTittle>
           <AllInputs spacing={0}>
             <InputWrap size='lg'>
@@ -79,8 +103,10 @@ export default function SignIn() {
               />
             </InputWrap>
           </AllInputs>
-          <MainButton>Continue</MainButton>
-          <MainLink href='/signup'>First time here? Sign up!</MainLink>
+          <MainButton isLoading={signInLoading}>Continue</MainButton>
+          <MainLink href='/signup' disabled={signInLoading}>
+            First time here? Sign up!
+          </MainLink>
         </Form>
       </FormWrapper>
     </Page>

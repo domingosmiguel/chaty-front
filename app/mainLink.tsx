@@ -1,9 +1,18 @@
 import Link from 'next/link';
+import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-export default function MainLink({ children, href, disabled }) {
+export default function MainLink({
+  children,
+  href,
+  disabled,
+}: {
+  children: ReactNode;
+  href: string;
+  disabled: boolean;
+}) {
   return (
-    <StyledLink href={href} disabled={disabled}>
+    <StyledLink href={href} className={disabled ? 'disabled' : ''}>
       {children}
     </StyledLink>
   );
@@ -21,9 +30,12 @@ const StyledLink = styled(Link)`
   font-family: ${({ theme }) => theme.fonts.logo};
   font-weight: 400;
   text-align: center;
-  ${({ disabled }) => disabled && DisabledLink};
+
   :hover {
     text-decoration: underline;
     transform: scale(1.02);
+  }
+  .disabled {
+    ${DisabledLink}
   }
 `;

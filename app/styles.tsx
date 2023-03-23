@@ -13,7 +13,7 @@ const Styles = {
     logo: logo.style.fontFamily,
   },
   sizes: {
-    max: '20rem',
+    max: '30rem',
   },
   space: {
     generalPadding: '0.5rem',

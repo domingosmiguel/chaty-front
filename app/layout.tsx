@@ -1,5 +1,6 @@
 'use client'; // this is a client component
 
+import { UserProvider } from '@/context/userContext';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from './globalStyles';
@@ -16,7 +17,9 @@ export default function RootLayout({
       <GlobalStyles />
       <ChakraProvider theme={theme}>
         <ThemeProvider theme={Styles}>
-          <body>{children}</body>
+          <UserProvider>
+            <body>{children}</body>
+          </UserProvider>
         </ThemeProvider>
       </ChakraProvider>
     </html>
