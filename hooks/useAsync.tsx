@@ -1,21 +1,41 @@
 import { useEffect, useState } from 'react';
 
-export default function useAsync(handler: Function, immediate = true) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(immediate);
-  const [error, setError] = useState(null);
+type AsyncHandler<T> = (...args: any[]) => Promise<T | null>;
 
-  const act = async (...args: any[]) => {
+interface AsyncState<T> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+}
+
+type AsyncAction<T> = (...args: any[]) => Promise<T | null>;
+
+interface UseAsyncOptions {
+  immediate?: boolean;
+}
+
+function useAsync<T>(
+  handler: AsyncHandler<T>,
+  options: UseAsyncOptions = {}
+): AsyncState<T> & { act: AsyncAction<T> } {
+  const { immediate = true } = options;
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(immediate);
+  const [error, setError] = useState<Error | null>(null);
+
+  const act: AsyncAction<T> = async (...args) => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await handler(...args);
-      setData(data);
+      const result = await handler(...args);
+      setData(result);
       setLoading(false);
-      return data;
-    } catch (err) {
-      setError(error);
+      return result;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err);
+      }
       setLoading(false);
       throw err;
     }
@@ -23,16 +43,11 @@ export default function useAsync(handler: Function, immediate = true) {
 
   useEffect(() => {
     if (immediate) {
-      act();
+      void act(); // Add void before calling act()
     }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return {
-    data,
-    loading,
-    error,
-    act,
-  };
+  return { data, loading, error, act };
 }
+
+export default useAsync;
