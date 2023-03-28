@@ -4,7 +4,7 @@
 import userContext from '@/context/userContext';
 import useSignUp from '@/hooks/api/useSignUp';
 import useForm from '@/hooks/useForm';
-import { EmailIcon, LockIcon } from '@chakra-ui/icons';
+import { AtSignIcon, EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect } from 'react';
@@ -33,13 +33,13 @@ export default function SignUp() {
   }) as [SignUpType, Function];
 
   const { signUpLoading, signUp } = useSignUp();
-  const { userData, setUserData } = useContext(userContext);
+  const { userData } = useContext(userContext);
 
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
       router.push('/home');
     }
-  }, [userData]);
+  }, [router, userData]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,9 +50,9 @@ export default function SignUp() {
       alert('As senhas devem ser iguais!');
     } else {
       try {
-        await signUp(form.email, form.password);
+        await signUp(form.email, form.username, form.password);
         alert('Inscrito com sucesso! Por favor, faça login.');
-        router.push('/sign-in');
+        router.push('/');
       } catch (error) {
         alert('Não foi possível fazer o cadastro!');
       }
@@ -88,6 +88,22 @@ export default function SignUp() {
                 variant='flushed'
                 type='email'
                 placeholder='email'
+                isRequired
+              />
+            </InputWrap>
+            <InputWrap size='lg'>
+              <InputLeftElement
+                pointerEvents='none'
+                children={<AtSignIcon color='gray.300' />}
+              />
+              <Input
+                name='username'
+                onChange={handleInputChange}
+                value={form.username}
+                focusBorderColor='orange'
+                variant='flushed'
+                type='text'
+                placeholder='username'
                 isRequired
               />
             </InputWrap>
@@ -138,7 +154,7 @@ export default function SignUp() {
 
 export type SignUpType = {
   email: string;
-  user: string;
+  username: string;
   password: string;
   confirmPassword: string;
 };

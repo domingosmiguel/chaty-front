@@ -7,7 +7,7 @@ export default function useSignUp() {
     loading: signUpLoading,
     error: signUpError,
     act: signUp,
-  } = useAsync(userApi.signUp, false);
+  } = useAsync(userApi.signUp, { immediate: false });
 
   return {
     signUpLoading,

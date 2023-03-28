@@ -38,7 +38,7 @@ export default function SignIn() {
     if (Object.keys(userData).length !== 0) {
       router.push('/home');
     }
-  }, [userData]);
+  }, [router, userData]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
