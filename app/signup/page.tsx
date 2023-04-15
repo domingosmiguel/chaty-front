@@ -1,16 +1,8 @@
 /* eslint-disable react/no-children-prop */
 'use client'; // this is a client component
 
-import userContext from '@/context/userContext';
-import useSignUp from '@/hooks/api/useSignUp';
-import useForm from '@/hooks/useForm';
-import { AtSignIcon, EmailIcon, LockIcon } from '@chakra-ui/icons';
-import { Input, InputLeftElement } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
-import React, { useContext, useEffect } from 'react';
-import mainLogo from '../../public/mainLogo.png';
-import MainButton from '../mainButton';
-import MainLink from '../mainLink';
+import MainButton from '@/components/mainButton';
+import MainLink from '@/components/mainLink';
 import {
   AllInputs,
   Form,
@@ -23,11 +15,20 @@ import {
   Slogan,
   TextWrapper,
   VisualIdentityWrapper,
-} from '../page.styles';
+} from '@/components/styledComponent';
+import userContext from '@/context/userContext';
+import useSignUp from '@/hooks/api/useSignUp';
+import useForm from '@/hooks/useForm';
+import mainLogo from '@/public/mainLogo.png';
+import { AtSignIcon, EmailIcon, LockIcon } from '@chakra-ui/icons';
+import { Input, InputLeftElement } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect } from 'react';
 export default function SignUp() {
   const router = useRouter();
   const [form, setForm] = useForm({
     email: '',
+    username: '',
     password: '',
     confirmPassword: '',
   }) as [SignUpType, Function];
@@ -36,7 +37,7 @@ export default function SignUp() {
   const { userData } = useContext(userContext);
 
   useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
+    if (userData?.token !== '') {
       router.push('/home');
     }
   }, [router, userData]);
@@ -59,8 +60,9 @@ export default function SignUp() {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(e.target);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(event.target);
+  };
 
   return (
     <Page>

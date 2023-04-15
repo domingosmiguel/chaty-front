@@ -16,7 +16,7 @@ interface UseAsyncOptions {
 
 function useAsync<T>(
   handler: AsyncHandler<T>,
-  options: UseAsyncOptions = {}
+  options: UseAsyncOptions = { immediate: true }
 ): AsyncState<T> & { act: AsyncAction<T> } {
   const { immediate = true } = options;
   const [data, setData] = useState<T | null>(null);
@@ -43,7 +43,7 @@ function useAsync<T>(
 
   useEffect(() => {
     if (immediate) {
-      void act(); // Add void before calling act()
+      void act();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
