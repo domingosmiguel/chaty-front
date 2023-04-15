@@ -1,16 +1,8 @@
 /* eslint-disable react/no-children-prop */
 'use client'; // this is a client component
 
-import userContext from '@/context/userContext';
-import useSignIn from '@/hooks/api/useSignIn';
-import useForm from '@/hooks/useForm';
-import { EmailIcon, LockIcon } from '@chakra-ui/icons';
-import { Input, InputLeftElement } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
-import React, { useContext, useEffect } from 'react';
-import mainLogo from '../public/mainLogo.png';
-import MainButton from './mainButton';
-import MainLink from './mainLink';
+import MainButton from '@/components/mainButton';
+import MainLink from '@/components/mainLink';
 import {
   AllInputs,
   Form,
@@ -23,19 +15,28 @@ import {
   Slogan,
   TextWrapper,
   VisualIdentityWrapper,
-} from './page.styles';
+} from '@/components/styledComponent';
+import userContext from '@/context/userContext';
+import useSignIn from '@/hooks/api/useSignIn';
+import useForm from '@/hooks/useForm';
+import mainLogo from '@/public/mainLogo.png';
+import { EmailIcon, LockIcon } from '@chakra-ui/icons';
+import { Input, InputLeftElement } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import React, { useContext, useEffect } from 'react';
+
 export default function SignIn() {
   const router = useRouter();
   const [form, setForm] = useForm({
     email: '',
     password: '',
-  }) as [SignUpType, Function];
+  }) as [SignInType, Function];
 
   const { signInLoading, signIn } = useSignIn();
   const { userData, setUserData } = useContext(userContext);
 
   useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
+    if (userData?.token !== '') {
       router.push('/home');
     }
   }, [router, userData]);
@@ -53,8 +54,9 @@ export default function SignIn() {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(e.target);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(event.target);
+  };
 
   return (
     <Page>
@@ -113,9 +115,7 @@ export default function SignIn() {
   );
 }
 
-export type SignUpType = {
+export type SignInType = {
   email: string;
-  user: string;
   password: string;
-  repeatPassword: string;
 };

@@ -29,7 +29,6 @@ export const Logo = styled.img`
 export const FormWrapper = styled(Div100vh)`
   width: 100%;
   max-width: ${({ theme }) => `calc(${theme.sizes.max} + 4rem)`};
-  height: fit-content;
   padding: 2rem;
   background-color: ${({ theme }) => theme.colors.orange};
   box-shadow: 1rem 1rem 3rem ${({ theme }) => theme.colors.light.secondary};
