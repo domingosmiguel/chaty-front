@@ -26,7 +26,7 @@ export async function getUsers(
 }
 
 export type UsersSearch = {
-  username: string;
-  pictureUrl: string;
-  entityId: number;
+  username?: string;
+  pictureUrl?: string;
+  entityId?: number;
 };

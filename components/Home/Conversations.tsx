@@ -7,6 +7,7 @@ import {
 import userContext from '@/context/userContext';
 import useConversations from '@/hooks/api/useConversations';
 import useForm from '@/hooks/useForm';
+import { UsersSearch } from '@/services/userApi';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import { Dispatch, SetStateAction, useContext } from 'react';
@@ -15,13 +16,13 @@ import ConversationCard from './ConversationCard';
 import NoConversation from './NoConversation';
 
 export default function Conversations({
-  setEntityId,
+  setRecipient,
 }: {
-  setEntityId: Dispatch<SetStateAction<number>>;
+  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
 }) {
   const [form, setForm] = useForm({
     searchMessages: '',
-  }) as [{ searchMessages: string }, Function];
+  });
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -67,14 +68,17 @@ export default function Conversations({
         </StyledForm>
       </StyledFormContainer>
       {conversations && conversations.length > 0 ? (
-        conversations.map((chat) => {
+        conversations.map((chat) => (
           <ConversationCard
+            key={chat.entityId}
             chat={chat}
             handleClick={() => {
-              setEntityId(chat.entityId);
+              setRecipient({
+                entityId: chat.entityId,
+              });
             }}
-          />;
-        })
+          />
+        ))
       ) : (
         <NoConversation />
       )}

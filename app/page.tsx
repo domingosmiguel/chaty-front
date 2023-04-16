@@ -19,7 +19,7 @@ import {
 import userContext from '@/context/userContext';
 import useSignIn from '@/hooks/api/useSignIn';
 import useForm from '@/hooks/useForm';
-import mainLogo from '@/public/mainLogo.png';
+import mainLogo from '@/public/images/mainLogo.png';
 import { EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
@@ -30,13 +30,13 @@ export default function SignIn() {
   const [form, setForm] = useForm({
     email: '',
     password: '',
-  }) as [SignInType, Function];
+  });
 
   const { signInLoading, signIn } = useSignIn();
   const { userData, setUserData } = useContext(userContext);
 
   useEffect(() => {
-    if (userData?.token !== '') {
+    if (userData) {
       router.push('/home');
     }
   }, [router, userData]);
@@ -114,8 +114,3 @@ export default function SignIn() {
     </Page>
   );
 }
-
-export type SignInType = {
-  email: string;
-  password: string;
-};

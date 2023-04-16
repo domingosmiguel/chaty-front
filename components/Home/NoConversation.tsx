@@ -1,9 +1,10 @@
+import { ChatIcon } from '@chakra-ui/icons';
 import styled from 'styled-components';
 
 export default function NoConversation() {
   return (
     <StyledEmptyConversation>
-      {`Inicie uma conversa em '+'`}
+      Inicie uma conversa em `{<ChatIcon />}`
     </StyledEmptyConversation>
   );
 }

@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 export default function useLocalStorage<T>(
   key: string,
-  initialValue: T
-): [T, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  initialValue: T | null
+): [T | null, (value: T | null) => void] {
+  const [storedValue, setStoredValue] = useState<T | null>(() => {
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
@@ -14,11 +14,11 @@ export default function useLocalStorage<T>(
     }
   });
 
-  const setValue = (value: T) => {
+  const setValue = (value: T | null) => {
     try {
       const valueToStore =
         value instanceof Function
-          ? (value as (val: T) => T)(storedValue)
+          ? (value as (val: T | null) => T)(storedValue)
           : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));

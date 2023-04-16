@@ -4,7 +4,7 @@ import * as messagesApi from '@/services/messagesApi';
 
 export default function useConversation(
   token: string | undefined,
-  recipientId: number
+  recipientId: number | undefined
 ) {
   const {
     data: conversation,
