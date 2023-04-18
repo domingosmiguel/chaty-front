@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - main
+name: Build and Deploy on AWS
+jobs:
+  build:
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create node env file
+        uses: SpicyPizza/create-envfile@v1.3.1
+        with:
+          directory: /
+          file_name: .env.local
+          fail_on_empty: true
+        envs:
+          NEXT_PUBLIC_API_HOST: ${{secrets.NEXT_PUBLIC_API_HOST}}
+          NEXT_PUBLIC_API_PORT: ${{secrets.NEXT_PUBLIC_API_PORT}}
+          NEXT_PUBLIC_API_BASE_URL: http://${{secrets.NEXT_PUBLIC_API_HOST}}:${{secrets.NEXT_PUBLIC_API_PORT}}
+      - name: Build
+        run: docker compose build
+      - name: Run
+        run: docker compose down && docker compose up -d
