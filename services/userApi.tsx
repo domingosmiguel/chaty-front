@@ -5,7 +5,7 @@ export async function signUp(
   username: string,
   password: string
 ) {
-  const response = await api.post('/users', { email, username, password });
+  const response = await api.post('/api/users', { email, username, password });
   return response.data;
 }
 
@@ -14,7 +14,7 @@ export async function getUsers(
   token: string
 ): Promise<UsersSearch[] | null> {
   try {
-    const response = await api.get(`/users/${username}`, {
+    const response = await api.get(`/api/users/${username}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

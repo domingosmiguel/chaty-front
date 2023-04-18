@@ -3,7 +3,7 @@ import api from './api';
 export async function getLastFromEachChat(
   token: string | undefined
 ): Promise<ChatSample[]> {
-  const response = await api.get('/messages', {
+  const response = await api.get('/api/messages', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -15,7 +15,7 @@ export async function getAllFromOneChat(
   token: string | undefined,
   recipientId: number | undefined
 ): Promise<FullChatData> {
-  const response = await api.get(`/messages/${recipientId}`, {
+  const response = await api.get(`/api/messages/${recipientId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -30,7 +30,7 @@ export async function postMessage(
 ): Promise<void> {
   const body = { text };
 
-  await api.post(`/messages/${recipientId}`, body, {
+  await api.post(`/api/messages/${recipientId}`, body, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
