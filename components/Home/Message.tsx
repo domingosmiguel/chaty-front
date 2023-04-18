@@ -16,6 +16,7 @@ const MessageContainer = styled.div`
   border-radius: ${({ theme }) => `${theme.space.generalPadding}`};
   width: fit-content;
   max-width: ${({ theme }) => `${theme.sizes.max}`};
+  line-height: 1.2rem;
 
   &:first-child {
     margin-top: 0;

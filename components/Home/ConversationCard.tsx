@@ -53,9 +53,10 @@ const TextContainer = styled.div`
 
 const StyledUsername = styled.div`
   cursor: pointer;
-  margin-bottom: ${({ theme }) => `${theme.space.generalPadding}`};
   text-overflow: ellipsis;
   overflow: hidden;
+  line-height: 1.6rem;
+  max-height: 1.6rem;
   white-space: nowrap;
 `;
 
@@ -64,6 +65,7 @@ const StyledMessage = styled.div`
   font-size: 0.8rem;
   text-overflow: ellipsis;
   overflow: hidden;
+  line-height: 1rem;
   max-height: 1rem;
   white-space: nowrap;
 `;
