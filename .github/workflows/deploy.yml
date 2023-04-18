@@ -19,7 +19,7 @@ jobs:
         env:
           NEXT_PUBLIC_API_HOST: ${{secrets.NEXT_PUBLIC_API_HOST}}
           NEXT_PUBLIC_API_PORT: ${{secrets.NEXT_PUBLIC_API_PORT}}
-          NEXT_PUBLIC_API_BASE_URL: http://${{secrets.NEXT_PUBLIC_API_HOST}}:${{secrets.NEXT_PUBLIC_API_PORT}}/api
+          NEXT_PUBLIC_API_BASE_URL: http://${{secrets.NEXT_PUBLIC_API_HOST}}:${{secrets.NEXT_PUBLIC_API_PORT}}
       - name: Build
         run: docker compose build
       - name: Run
