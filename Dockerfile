@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build 
 
-RUN rm -rf tsconfig.json app components context hooks services
+RUN rm -rf tsconfig.json app components context hooks nginx services
 
 EXPOSE 3000
 
