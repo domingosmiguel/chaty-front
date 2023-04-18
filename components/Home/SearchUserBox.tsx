@@ -30,7 +30,7 @@ export default function SearchUserBox({
   const { usersLoading, usersError, getUsers } = useUsers();
   const [form, setForm] = useForm({
     searchUser: '',
-  }) as [{ searchUser: string }, Function];
+  });
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>
