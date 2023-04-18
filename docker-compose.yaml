@@ -1,0 +1,32 @@
+services:
+  next:
+    container_name: next
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - next-volume:/var/www/html
+    networks:
+      - fullstack
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - next-volume:/var/www/html
+    depends_on:
+      - next
+    networks:
+      - fullstack
+
+volumes:
+  next-volume:
+
+networks:
+  fullstack:
+    external:
+      name: fullstack
