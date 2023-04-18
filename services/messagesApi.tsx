@@ -13,7 +13,7 @@ export async function getLastFromEachChat(
 
 export async function getAllFromOneChat(
   token: string | undefined,
-  recipientId: number
+  recipientId: number | undefined
 ): Promise<FullChatData> {
   const response = await api.get(`/messages/${recipientId}`, {
     headers: {
@@ -41,7 +41,7 @@ export type ChatSample = {
   entityId: number;
   entityImg: string;
   entityUsername: string;
-  message: Message;
+  message: Message & { createdAt: Date };
 };
 
 export type FullChatData = {

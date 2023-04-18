@@ -15,11 +15,11 @@ import styled from 'styled-components';
 import UserCard from './UserCard';
 
 export default function SearchUserBox({
-  setEntityId,
+  setRecipient,
   display,
   setDisplay,
 }: {
-  setEntityId: Dispatch<SetStateAction<number>>;
+  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
   display: boolean;
   setDisplay: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -75,7 +75,7 @@ export default function SearchUserBox({
         </StyledForm>
       </StyledFormContainer>
       {searchResults?.map((user) => (
-        <UserCard key={user.entityId} setEntityId={setEntityId} user={user} />
+        <UserCard key={user.entityId} setRecipient={setRecipient} user={user} />
       ))}
     </StyledSearchUserBox>
   );
@@ -83,6 +83,7 @@ export default function SearchUserBox({
 
 const StyledSearchUserBox = styled.div`
   position: absolute;
+  z-index: 2;
   background-color: ${({ theme }) => `${theme.colors.light.main}`};
   border-style: solid;
   border-width: 0.1rem;

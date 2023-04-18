@@ -2,22 +2,17 @@ import useLocalStorage from '@/hooks/api/useLocalStorage';
 import React, { createContext } from 'react';
 
 const userContext = createContext<UserContextType>({
-  userData: undefined,
+  userData: null,
   setUserData: () => {},
 });
 
 export default userContext;
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [userData, setUserData] = useLocalStorage('userData', {
-    user: {
-      id: 0,
-      username: '',
-      pictureUrl: '',
-      entityId: 0,
-    },
-    token: '',
-  });
+  const [userData, setUserData] = useLocalStorage<SignInResult | null>(
+    'userData',
+    null
+  );
 
   return (
     <userContext.Provider value={{ userData, setUserData }}>
@@ -27,8 +22,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 }
 
 export type UserContextType = {
-  userData?: SignInResult;
-  setUserData: (userData: SignInResult) => void;
+  userData: SignInResult | null;
+  setUserData: (userData: SignInResult | null) => void;
 };
 
 type SignInResult = {

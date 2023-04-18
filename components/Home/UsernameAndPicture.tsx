@@ -1,17 +1,18 @@
 import userContext from '@/context/userContext';
-import userPic from '@/public/userPic.png';
-import { AddIcon, SettingsIcon } from '@chakra-ui/icons';
+import userPic from '@/public/images/userPic.png';
+import { UsersSearch } from '@/services/userApi';
+import { ChatIcon, SettingsIcon } from '@chakra-ui/icons';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import styled from 'styled-components';
 import SearchUserBox from './SearchUserBox';
 
 export default function UsernameAndPicture({
-  setEntityId,
+  setRecipient,
 }: {
-  setEntityId: Dispatch<SetStateAction<number>>;
+  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
 }) {
   const [boxDisplay, setBoxDisplay] = useState(false);
-  const { userData } = useContext(userContext);
+  const { userData, setUserData } = useContext(userContext);
 
   const userPicture = userData?.user.pictureUrl || userPic.src;
 
@@ -24,10 +25,10 @@ export default function UsernameAndPicture({
     <StyledUsernameAndPicture>
       <Picture src={userPicture} alt={username} />
       <Username>{username}</Username>
-      <StyledSettingsIcon />
-      <StyledAddIcon onClick={handleIconClick} />
+      <StyledSettingsIcon onClick={() => setUserData(null)} />
+      <StyledChatIcon onClick={handleIconClick} />
       <SearchUserBox
-        setEntityId={setEntityId}
+        setRecipient={setRecipient}
         display={boxDisplay}
         setDisplay={setBoxDisplay}
       />
@@ -52,9 +53,37 @@ const Picture = styled.img`
 `;
 
 const StyledSettingsIcon = styled(SettingsIcon)`
+  cursor: pointer;
+  width: 2.1rem;
+  height: 2.1rem;
   margin-left: auto;
+  padding: ${({ theme }) => `${theme.space.generalPadding}`};
+  border: 0.05rem solid transparent;
+  border-radius: 0.5rem;
+
+  &:hover {
+    border: 0.05rem solid black;
+  }
+
+  & :nth-child(n) {
+    cursor: pointer;
+  }
 `;
 
-const StyledAddIcon = styled(AddIcon)`
+const StyledChatIcon = styled(ChatIcon)`
+  cursor: pointer;
+  width: 2.1rem;
+  height: 2.1rem;
   margin-left: ${({ theme }) => `${theme.space.generalPadding}`};
+  padding: ${({ theme }) => `${theme.space.generalPadding}`};
+  border: 0.05rem solid transparent;
+  border-radius: 0.5rem;
+
+  &:hover {
+    border: 0.05rem solid black;
+  }
+
+  & :nth-child(n) {
+    cursor: pointer;
+  }
 `;

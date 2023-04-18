@@ -1,6 +1,5 @@
-import userPic from '@/public/userPic.png';
+import userPic from '@/public/images/userPic.png';
 import { ChatSample } from '@/services/messagesApi';
-import Image from 'next/image';
 import styled from 'styled-components';
 
 export default function ConversationCard({
@@ -12,7 +11,7 @@ export default function ConversationCard({
 }) {
   return (
     <StyledCard onClick={handleClick}>
-      <Image
+      <ProfilePic
         src={chat.entityImg || userPic.src}
         alt={chat.entityUsername || 'user'}
       />
@@ -25,12 +24,48 @@ export default function ConversationCard({
 }
 
 const StyledCard = styled.div`
-  height: 3rem;
+  cursor: pointer;
+  height: 4rem;
   display: flex;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.space.generalPadding}`};
+  border: 0.1rem solid transparent;
+
+  &:hover {
+    border: 0.05rem solid black;
+    border-radius: 1rem;
+  }
 `;
 
-const TextContainer = styled.div``;
+const ProfilePic = styled.img`
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+`;
 
-const StyledUsername = styled.div``;
+const TextContainer = styled.div`
+  cursor: pointer;
+  margin-left: ${({ theme }) => `${theme.space.generalPadding}`};
+  flex: 1;
+  overflow: hidden;
+`;
 
-const StyledMessage = styled.div``;
+const StyledUsername = styled.div`
+  cursor: pointer;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 1.6rem;
+  max-height: 1.6rem;
+  white-space: nowrap;
+`;
+
+const StyledMessage = styled.div`
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 1rem;
+  max-height: 1rem;
+  white-space: nowrap;
+`;

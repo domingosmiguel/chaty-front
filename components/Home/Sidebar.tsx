@@ -1,17 +1,18 @@
+import { UsersSearch } from '@/services/userApi';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import Conversations from './Conversations';
 import UsernameAndPicture from './UsernameAndPicture';
 
 export default function Sidebar({
-  setEntityId,
+  setRecipient,
 }: {
-  setEntityId: Dispatch<SetStateAction<number>>;
+  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
 }) {
   return (
     <StyledSidebar>
-      <UsernameAndPicture setEntityId={setEntityId} />
-      <Conversations setEntityId={setEntityId} />
+      <UsernameAndPicture setRecipient={setRecipient} />
+      <Conversations setRecipient={setRecipient} />
     </StyledSidebar>
   );
 }

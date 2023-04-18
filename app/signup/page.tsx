@@ -19,7 +19,7 @@ import {
 import userContext from '@/context/userContext';
 import useSignUp from '@/hooks/api/useSignUp';
 import useForm from '@/hooks/useForm';
-import mainLogo from '@/public/mainLogo.png';
+import mainLogo from '@/public/images/mainLogo.png';
 import { AtSignIcon, EmailIcon, LockIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
@@ -31,13 +31,13 @@ export default function SignUp() {
     username: '',
     password: '',
     confirmPassword: '',
-  }) as [SignUpType, Function];
+  });
 
   const { signUpLoading, signUp } = useSignUp();
   const { userData } = useContext(userContext);
 
   useEffect(() => {
-    if (userData?.token !== '') {
+    if (userData) {
       router.push('/home');
     }
   }, [router, userData]);

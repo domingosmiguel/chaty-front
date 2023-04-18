@@ -7,21 +7,33 @@ import {
 import userContext from '@/context/userContext';
 import useConversations from '@/hooks/api/useConversations';
 import useForm from '@/hooks/useForm';
+import { ChatSample } from '@/services/messagesApi';
+import { UsersSearch } from '@/services/userApi';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import ConversationCard from './ConversationCard';
 import NoConversation from './NoConversation';
 
 export default function Conversations({
-  setEntityId,
+  setRecipient,
 }: {
-  setEntityId: Dispatch<SetStateAction<number>>;
+  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
 }) {
   const [form, setForm] = useForm({
     searchMessages: '',
-  }) as [{ searchMessages: string }, Function];
+  });
+  const [conversationsData, setConversationsData] = useState<
+    ChatSample[] | null
+  >(null);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -38,6 +50,31 @@ export default function Conversations({
     conversationsError,
     getConversations,
   } = useConversations(userData?.token);
+
+  const fetchData = async () => {
+    if (userData?.token) {
+      return getConversations(userData.token);
+    }
+  };
+
+  const updateData = useCallback((data?: ChatSample[] | null) => {
+    if (data) {
+      setConversationsData(data);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const data = await fetchData();
+
+        updateData(data);
+      } catch (error) {
+        alert('Error fetching data');
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -67,14 +104,17 @@ export default function Conversations({
         </StyledForm>
       </StyledFormContainer>
       {conversations && conversations.length > 0 ? (
-        conversations.map((chat) => {
+        conversations.map((chat) => (
           <ConversationCard
+            key={chat.entityId}
             chat={chat}
             handleClick={() => {
-              setEntityId(chat.entityId);
+              setRecipient({
+                entityId: chat.entityId,
+              });
             }}
-          />;
-        })
+          />
+        ))
       ) : (
         <NoConversation />
       )}
