@@ -7,23 +7,14 @@ jobs:
   build:
     runs-on: self-hosted
     timeout-minutes: 10
-    env:
-      NEXT_PUBLIC_API_HOST: ${{secrets.NEXT_PUBLIC_API_HOST}}
-      NEXT_PUBLIC_API_PORT: ${{secrets.NEXT_PUBLIC_API_PORT}}
-      NEXT_PUBLIC_API_BASE_URL: http://${{secrets.NEXT_PUBLIC_API_HOST}}:${{secrets.NEXT_PUBLIC_API_PORT}}/api/
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Create node env file
-        uses: SpicyPizza/create-envfile@v1.3.1
-        with:
-          directory: ./
-          file_name: .env.local
-          fail_on_empty: true
-        env:
-          NEXT_PUBLIC_API_HOST: ${{env.NEXT_PUBLIC_API_HOST}}
-          NEXT_PUBLIC_API_PORT: ${{env.NEXT_PUBLIC_API_PORT}}
-          NEXT_PUBLIC_API_BASE_URL: ${{env.NEXT_PUBLIC_API_BASE_URL}}
+      - name: Export environment variables
+        run: |
+          export NEXT_PUBLIC_API_HOST="${{ secrets.NEXT_PUBLIC_API_HOST }}"
+          export NEXT_PUBLIC_API_PORT="${{ secrets.NEXT_PUBLIC_API_PORT }}"
+          export NEXT_PUBLIC_API_BASE_URL="http://${{ secrets.NEXT_PUBLIC_API_HOST }}:${{ secrets.NEXT_PUBLIC_API_PORT }}/api/"
       - name: Build
         run: docker compose build
       - name: Run
