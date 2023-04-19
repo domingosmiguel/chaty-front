@@ -2,31 +2,26 @@ services:
   next:
     container_name: next
     restart: always
+    image: chaty:latest
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - next-volume:/var/www/html
     networks:
-      - fullstack
+      - chaty_nginx_proxy
 
   nginx:
     container_name: nginx
     restart: always
+    image: chaty_nginx:latest
     build: ./nginx
     ports:
       - 80:80
-    volumes:
-      - next-volume:/var/www/html
     depends_on:
       - next
     networks:
-      - fullstack
-
-volumes:
-  next-volume:
+      - chaty_nginx_proxy
 
 networks:
-  fullstack:
+  chaty_nginx_proxy:
     external:
-      name: fullstack
+      name: chaty_nginx_proxy
