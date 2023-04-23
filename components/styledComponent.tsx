@@ -32,6 +32,12 @@ export const Logo = styled.img`
   margin-left: 2rem;
 
   @media screen and (max-width: 1020px) {
+    margin-left: 4rem;
+  }
+  @media screen and (max-width: 480px) {
+    margin-left: 1rem;
+  }
+  @media screen and (max-width: 390px) {
     margin-left: 0;
   }
 `;
