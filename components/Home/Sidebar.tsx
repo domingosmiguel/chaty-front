@@ -20,7 +20,7 @@ export default function Sidebar({
 }
 
 const StyledSidebar = styled.div<{ display?: boolean }>`
-  width: ${({ theme }) => `calc(${theme.sizes.max} - 5rem)`};
+  min-width: ${({ theme }) => `calc(${theme.sizes.max} - 5rem)`};
   height: 100%;
   padding: ${({ theme }) => `${theme.space.generalPadding}`};
   border-right: ${({ theme }) =>
