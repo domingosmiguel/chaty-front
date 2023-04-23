@@ -30,10 +30,10 @@ export default function MainButton({
 
 const StyledButton = styled.button`
   cursor: pointer;
-  max-width: ${({ theme }) => theme.sizes.max};
   width: 100%;
   margin: 0.25rem 0;
-  height: 2.875rem;
+  height: 100%;
+  max-height: 2.875rem;
   font-family: ${({ theme }) => theme.fonts.logo};
   background-color: ${({ theme }) => theme.colors.light.main};
   color: ${({ theme }) => theme.colors.light.secondary};

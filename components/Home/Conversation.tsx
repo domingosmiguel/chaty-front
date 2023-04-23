@@ -1,9 +1,3 @@
-import {
-  AllInputs,
-  Form,
-  FormWrapper,
-  InputWrap,
-} from '@/components/styledComponent';
 import userContext from '@/context/userContext';
 import useConversation from '@/hooks/api/useConversation';
 import useNewMessage from '@/hooks/api/useNewMessage';
@@ -11,7 +5,12 @@ import useForm from '@/hooks/useForm';
 import { FullChatData } from '@/services/messagesApi';
 import { UsersSearch } from '@/services/userApi';
 import { EmailIcon } from '@chakra-ui/icons';
-import { Input, InputLeftElement } from '@chakra-ui/react';
+import {
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+} from '@chakra-ui/react';
 import {
   Dispatch,
   SetStateAction,
@@ -74,26 +73,33 @@ export default function Conversation({
     fetchData();
   }, [userData?.token, recipient?.entityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function submitMessageAndUpdate() {
-    try {
-      await postNewMessage(
-        userData?.token,
-        form.newMessage,
-        recipient?.entityId || 0
-      );
-      clearForm();
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        await fetchData();
+      } catch (error) {
+        console.log('Error fetching chat data.');
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-      fetchData();
-    } catch (err) {
-      alert('falha no envio da mensagem ):');
+  async function submitMessageAndUpdate() {
+    if (form.newMessage !== '') {
+      try {
+        await postNewMessage(
+          userData?.token,
+          form.newMessage,
+          recipient?.entityId || 0
+        );
+        clearForm();
+
+        fetchData();
+      } catch (err) {
+        console.log('Failed to send message ):');
+      }
     }
   }
-
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    submitMessageAndUpdate();
-  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm(event.target);
@@ -124,33 +130,38 @@ export default function Conversation({
           ))}
         </MessagesScroll>
       </MessagesContainer>
-      <StyledFormContainer>
-        <StyledForm onSubmit={submitForm}>
-          <StyledAllInputs spacing={0}>
-            <InputWrap size='md'>
-              <InputLeftElement
-                pointerEvents='none'
-                // eslint-disable-next-line react/no-children-prop
-                children={<EmailIcon color='gray.300' />}
-              />
-              <Input
-                name='newMessage'
-                onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
-                value={form.newMessage}
-                focusBorderColor='orange'
-                variant='flushed'
-                type='text'
-                placeholder='mensagem'
-                isRequired
-              />
-            </InputWrap>
-          </StyledAllInputs>
-          <Send>
-            <MainButton isLoading={postNewMessageLoading}>Enviar</MainButton>
-          </Send>
-        </StyledForm>
-      </StyledFormContainer>
+      <StyledInputContainer>
+        <StyledInputGroup size='md'>
+          <InputLeftElement
+            pointerEvents='none'
+            children={<EmailIcon color='gray.300' />} // eslint-disable-line react/no-children-prop
+          />
+          <StyledInput
+            name='newMessage'
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            focusBorderColor='black'
+            value={form.newMessage}
+            variant='unstyled'
+            type='text'
+            placeholder='message'
+            isRequired
+          />
+          <StyledInputRightElement
+            // eslint-disable-next-line react/no-children-prop
+            children={
+              <Send>
+                <MainButton
+                  isLoading={postNewMessageLoading}
+                  onClick={submitMessageAndUpdate}
+                >
+                  Send
+                </MainButton>
+              </Send>
+            }
+          />
+        </StyledInputGroup>
+      </StyledInputContainer>
     </Container>
   );
 }
@@ -185,26 +196,33 @@ const MessagesScroll = styled.div`
   overflow-y: auto;
 `;
 
-const StyledFormContainer = styled(FormWrapper)`
-  background-color: transparent;
+const StyledInputContainer = styled.div`
   box-shadow: none;
   padding: ${({ theme }) => `${theme.space.generalPadding} 0 0`};
   height: fit-content !important;
   max-width: none;
   border-top: 0.05rem solid black;
-`;
-
-const StyledForm = styled(Form)`
-  margin-bottom: initial;
-  max-width: 100%;
   display: flex;
 `;
 
-const StyledAllInputs = styled(AllInputs)`
-  flex-grow: 1;
+const StyledInputRightElement = styled(InputRightElement)`
+  width: fit-content;
+`;
+
+const StyledInputGroup = styled(InputGroup)`
+  background-color: white;
+  border-radius: ${({ theme }) => `calc(${theme.space.generalPadding} * 1.5)`};
+  height: fit-content !important;
+`;
+
+const StyledInput = styled(Input)`
+  padding-right: 5.5rem;
+  height: 2.5rem;
 `;
 
 const Send = styled.div`
   width: 5rem;
-  margin-left: ${({ theme }) => `${theme.space.generalPadding}`};
+  height: 100%;
+  margin: -0.5rem ${({ theme }) => `calc(${theme.space.generalPadding} / 2)`} 0;
+  padding: ${({ theme }) => `calc(${theme.space.generalPadding} / 2) 0`};
 `;

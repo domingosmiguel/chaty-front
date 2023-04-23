@@ -1,9 +1,4 @@
-import {
-  AllInputs,
-  Form,
-  FormWrapper,
-  InputWrap,
-} from '@/components/styledComponent';
+import { AllInputs, Form, InputWrap } from '@/components/styledComponent';
 import userContext from '@/context/userContext';
 import useConversations from '@/hooks/api/useConversations';
 import useForm from '@/hooks/useForm';
@@ -70,7 +65,7 @@ export default function Conversations({
 
         updateData(data);
       } catch (error) {
-        alert('Error fetching data');
+        console.log('Error fetching conversations data.');
       }
     }, 5000);
     return () => clearInterval(interval);
@@ -78,31 +73,29 @@ export default function Conversations({
 
   return (
     <>
-      <StyledTitle>Conversas</StyledTitle>
-      <StyledFormContainer>
-        <StyledForm>
-          <AllInputs spacing={0}>
-            <InputWrap size='sm'>
-              <InputLeftElement
-                pointerEvents='none'
-                // eslint-disable-next-line react/no-children-prop
-                children={<SearchIcon color='gray.300' />}
-              />
-              <Input
-                name='searchMessages'
-                onChange={handleInputChange}
-                value={form.searchMessages}
-                pr='1rem'
-                focusBorderColor='black'
-                variant='flushed'
-                type='text'
-                placeholder='Pesquisar mensagens'
-                isRequired
-              />
-            </InputWrap>
-          </AllInputs>
-        </StyledForm>
-      </StyledFormContainer>
+      <StyledTitle>Conversations</StyledTitle>
+      <StyledForm>
+        <AllInputs spacing={0}>
+          <InputWrap size='sm'>
+            <InputLeftElement
+              pointerEvents='none'
+              // eslint-disable-next-line react/no-children-prop
+              children={<SearchIcon color='gray.300' />}
+            />
+            <Input
+              name='searchMessages'
+              onChange={handleInputChange}
+              value={form.searchMessages}
+              pr='1rem'
+              focusBorderColor='black'
+              variant='flushed'
+              type='text'
+              placeholder='search messages'
+              isRequired
+            />
+          </InputWrap>
+        </AllInputs>
+      </StyledForm>
       {conversations && conversations.length > 0 ? (
         conversations.map((chat) => (
           <ConversationCard
@@ -124,16 +117,10 @@ export default function Conversations({
 
 const StyledTitle = styled.div`
   font: ${({ theme }) => `1.5rem ${theme.fonts.body}`};
-  margin-top: ${({ theme }) => `${theme.space.generalPadding}`}; ;
-`;
-
-const StyledFormContainer = styled(FormWrapper)`
-  background-color: transparent;
-  box-shadow: none;
-  padding: ${({ theme }) => `${theme.space.generalPadding} 0`};
-  height: fit-content !important;
+  margin-top: ${({ theme }) => `${theme.space.generalPadding}`};
 `;
 
 const StyledForm = styled(Form)`
+  padding: ${({ theme }) => `${theme.space.generalPadding} 0`};
   margin-bottom: initial;
 `;
