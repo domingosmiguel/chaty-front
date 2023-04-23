@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export default function NoConversation() {
   return (
     <StyledEmptyConversation>
-      Inicie uma conversa em `{<ChatIcon />}`
+      Start a conversation on `{<ChatIcon />}`
     </StyledEmptyConversation>
   );
 }

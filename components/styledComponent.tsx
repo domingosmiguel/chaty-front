@@ -8,8 +8,13 @@ export const Page = styled(Div100vh)`
   justify-content: center;
   align-items: center;
 `;
+export const ResponsivePage = styled(Page)`
+  @media screen and (max-width: 1020px) {
+    flex-direction: column;
+  }
+`;
 export const VisualIdentityWrapper = styled.section`
-  width: 100%;
+  flex-grow: 1;
   height: 100%;
   padding: 2rem;
   display: flex;
@@ -25,6 +30,10 @@ export const TextWrapper = styled.div`
 export const Logo = styled.img`
   width: 8rem;
   margin-left: 2rem;
+
+  @media screen and (max-width: 1020px) {
+    margin-left: 0;
+  }
 `;
 export const FormWrapper = styled(Div100vh)`
   width: 100%;
@@ -36,6 +45,10 @@ export const FormWrapper = styled(Div100vh)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 1020px) {
+    max-width: 100%;
+  }
 `;
 export const Name = styled.p`
   font-family: ${({ theme }) => theme.fonts.logo};
@@ -58,7 +71,6 @@ export const FormTittle = styled.p`
   line-height: 2.9rem;
 `;
 export const Form = styled.form`
-  max-width: ${({ theme }) => theme.sizes.max};
   width: 100%;
   margin-bottom: 1rem;
 `;

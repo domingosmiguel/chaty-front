@@ -22,11 +22,11 @@ export default function Home() {
 
   return (
     <Page>
-      <Sidebar setRecipient={setRecipient} />
+      <Sidebar display={!recipient} setRecipient={setRecipient} />
       {recipient ? (
         <Conversation recipient={recipient} setRecipient={setRecipient} />
       ) : (
-        <NoConversationSelected />
+        <NoConversationSelected display={!!recipient} />
       )}
     </Page>
   );

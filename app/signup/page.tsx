@@ -11,7 +11,7 @@ import {
   InputWrap,
   Logo,
   Name,
-  Page,
+  ResponsivePage,
   Slogan,
   TextWrapper,
   VisualIdentityWrapper,
@@ -65,7 +65,7 @@ export default function SignUp() {
   };
 
   return (
-    <Page>
+    <ResponsivePage>
       <VisualIdentityWrapper>
         <TextWrapper>
           <Name>Chaty</Name>
@@ -150,7 +150,7 @@ export default function SignUp() {
           </MainLink>
         </Form>
       </FormWrapper>
-    </Page>
+    </ResponsivePage>
   );
 }
 

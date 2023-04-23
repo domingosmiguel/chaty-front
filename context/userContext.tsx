@@ -3,7 +3,7 @@ import React, { createContext } from 'react';
 
 const userContext = createContext<UserContextType>({
   userData: null,
-  setUserData: () => {},
+  setUserData: (userData: SignInResult | null) => {},
 });
 
 export default userContext;
