@@ -23,7 +23,10 @@ export default function Home() {
     <Page>
       <Sidebar display={!recipientId} setRecipientId={setRecipientId} />
       {recipientId ? (
-        <Conversation recipientId={recipientId} />
+        <Conversation
+          recipientId={recipientId}
+          setRecipientId={setRecipientId}
+        />
       ) : (
         <NoConversationSelected display={!!recipientId} />
       )}
