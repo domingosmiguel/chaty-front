@@ -2,6 +2,7 @@ import userContext from '@/context/userContext';
 import useConversation from '@/hooks/api/useConversation';
 import useNewMessage from '@/hooks/api/useNewMessage';
 import useForm from '@/hooks/useForm';
+import useScrollToBottom from '@/hooks/useScrollToBottom';
 import { FullChatData } from '@/services/messagesApi';
 import { EmailIcon } from '@chakra-ui/icons';
 import {
@@ -10,15 +11,29 @@ import {
   InputLeftElement,
   InputRightElement,
 } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import MainButton from '../mainButton';
 import ChatUserCard from './ChatUserCard';
 import Message from './Message';
 
-export default function Conversation({ recipientId }: { recipientId: number }) {
-  console.log('🚀 ~ file: Conversation.tsx:34 ~ recipient:', recipientId);
+export default function Conversation({
+  recipientId,
+  setRecipientId,
+}: {
+  recipientId: number;
+  setRecipientId: Dispatch<SetStateAction<number>>;
+}) {
   const { userData } = useContext(userContext);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = useScrollToBottom();
   const [form, setForm, clearForm] = useForm({
     newMessage: '',
   });
@@ -40,6 +55,10 @@ export default function Conversation({ recipientId }: { recipientId: number }) {
   }, [conversation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    scrollToBottom(recipientId, messagesContainerRef);
+  }, [conversationData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     const fetchData = async () => {
       getConversation(userData?.token, recipientId);
     };
@@ -57,14 +76,10 @@ export default function Conversation({ recipientId }: { recipientId: number }) {
     return () => clearInterval(interval);
   }, [recipientId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function submitMessageAndUpdate() {
+  function submitMessageAndUpdate() {
     if (form.newMessage !== '') {
       try {
-        await postNewMessage(
-          userData?.token,
-          form.newMessage,
-          recipientId || 0
-        );
+        postNewMessage(userData?.token, form.newMessage, recipientId || 0);
         clearForm();
       } catch (err) {
         console.log('Failed to send message ):');
@@ -89,9 +104,10 @@ export default function Conversation({ recipientId }: { recipientId: number }) {
           pictureUrl: conversationData?.entityImg,
           username: conversationData?.entityUsername,
         }}
+        setRecipientId={setRecipientId}
       />
       <MessagesContainer>
-        <MessagesScroll>
+        <MessagesScroll ref={messagesContainerRef}>
           {conversationData?.messages?.map((message) => (
             <Message
               key={message.id}
