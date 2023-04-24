@@ -1,15 +1,14 @@
 import userContext from '@/context/userContext';
 import userPic from '@/public/images/userPic.png';
-import { UsersSearch } from '@/services/userApi';
 import { ChatIcon, SettingsIcon } from '@chakra-ui/icons';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import styled from 'styled-components';
 import SearchUserBox from './SearchUserBox';
 
 export default function UsernameAndPicture({
-  setRecipient,
+  setRecipientId,
 }: {
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
 }) {
   const [boxDisplay, setBoxDisplay] = useState(false);
   const { userData, setUserData } = useContext(userContext);
@@ -28,7 +27,7 @@ export default function UsernameAndPicture({
       <StyledSettingsIcon onClick={() => setUserData(null)} />
       <StyledChatIcon onClick={handleIconClick} />
       <SearchUserBox
-        setRecipient={setRecipient}
+        setRecipientId={setRecipientId}
         display={boxDisplay}
         setDisplay={setBoxDisplay}
       />

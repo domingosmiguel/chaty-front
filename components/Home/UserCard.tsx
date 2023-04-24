@@ -4,21 +4,17 @@ import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
 export default function UserCard({
-  setRecipient,
+  setRecipientId,
   user,
 }: {
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
   user: UsersSearch;
 }) {
   const userPicture = user.pictureUrl || userPic.src;
 
   return (
     <StyledUsernameAndPicture
-      onClick={() =>
-        setRecipient({
-          entityId: user.entityId,
-        })
-      }
+      onClick={() => setRecipientId(user.entityId || 0)}
     >
       <Picture src={userPicture} alt={user.username} />
       <Username>{user.username}</Username>

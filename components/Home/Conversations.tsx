@@ -3,7 +3,6 @@ import userContext from '@/context/userContext';
 import useConversations from '@/hooks/api/useConversations';
 import useForm from '@/hooks/useForm';
 import { ChatSample } from '@/services/messagesApi';
-import { UsersSearch } from '@/services/userApi';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import {
@@ -19,9 +18,9 @@ import ConversationCard from './ConversationCard';
 import NoConversation from './NoConversation';
 
 export default function Conversations({
-  setRecipient,
+  setRecipientId,
 }: {
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
 }) {
   const [form, setForm] = useForm({
     searchMessages: '',
@@ -72,7 +71,7 @@ export default function Conversations({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
+    <StyledConversations>
       <StyledTitle>Conversations</StyledTitle>
       <StyledForm>
         <AllInputs spacing={0}>
@@ -97,23 +96,43 @@ export default function Conversations({
         </AllInputs>
       </StyledForm>
       {conversations && conversations.length > 0 ? (
-        conversations.map((chat) => (
-          <ConversationCard
-            key={chat.entityId}
-            chat={chat}
-            handleClick={() => {
-              setRecipient({
-                entityId: chat.entityId,
-              });
-            }}
-          />
-        ))
+        <ConversationContainer>
+          <ConversationScroll>
+            {conversations.map((chat) => (
+              <ConversationCard
+                key={chat.entityId}
+                chat={chat}
+                handleClick={() => {
+                  setRecipientId(chat.entityId);
+                }}
+              />
+            ))}
+          </ConversationScroll>
+        </ConversationContainer>
       ) : (
         <NoConversation />
       )}
-    </>
+    </StyledConversations>
   );
 }
+const StyledConversations = styled.div`
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+`;
+
+const ConversationContainer = styled.div`
+  flex-grow: 1;
+
+  position: relative;
+  overflow-y: scroll;
+`;
+
+const ConversationScroll = styled.div`
+  position: absolute;
+  width: 100%;
+`;
 
 const StyledTitle = styled.div`
   font: ${({ theme }) => `1.5rem ${theme.fonts.body}`};

@@ -5,13 +5,12 @@ import NoConversationSelected from '@/components/Home/NoConversationSelected';
 import Sidebar from '@/components/Home/Sidebar';
 import { Page } from '@/components/styledComponent';
 import userContext from '@/context/userContext';
-import { UsersSearch } from '@/services/userApi';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 
 export default function Home() {
   const { userData } = useContext(userContext);
-  const [recipient, setRecipient] = useState<UsersSearch>();
+  const [recipientId, setRecipientId] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,11 +21,11 @@ export default function Home() {
 
   return (
     <Page>
-      <Sidebar display={!recipient} setRecipient={setRecipient} />
-      {recipient ? (
-        <Conversation recipient={recipient} setRecipient={setRecipient} />
+      <Sidebar display={!recipientId} setRecipientId={setRecipientId} />
+      {recipientId ? (
+        <Conversation recipientId={recipientId} />
       ) : (
-        <NoConversationSelected display={!!recipient} />
+        <NoConversationSelected display={!!recipientId} />
       )}
     </Page>
   );

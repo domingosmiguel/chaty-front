@@ -2,8 +2,8 @@ import userContext from '@/context/userContext';
 import useConversation from '@/hooks/api/useConversation';
 import useNewMessage from '@/hooks/api/useNewMessage';
 import useForm from '@/hooks/useForm';
+import useScrollToBottom from '@/hooks/useScrollToBottom';
 import { FullChatData } from '@/services/messagesApi';
-import { UsersSearch } from '@/services/userApi';
 import { EmailIcon } from '@chakra-ui/icons';
 import {
   Input,
@@ -14,9 +14,9 @@ import {
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import styled from 'styled-components';
@@ -25,13 +25,15 @@ import ChatUserCard from './ChatUserCard';
 import Message from './Message';
 
 export default function Conversation({
-  recipient,
-  setRecipient,
+  recipientId,
+  setRecipientId,
 }: {
-  recipient: UsersSearch | undefined;
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  recipientId: number;
+  setRecipientId: Dispatch<SetStateAction<number>>;
 }) {
   const { userData } = useContext(userContext);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = useScrollToBottom();
   const [form, setForm, clearForm] = useForm({
     newMessage: '',
   });
@@ -46,55 +48,39 @@ export default function Conversation({
     conversationLoading,
     conversationError,
     getConversation,
-  } = useConversation(userData?.token, recipient?.entityId);
-
-  const updateData = useCallback((data: FullChatData | null) => {
-    if (data) {
-      setRecipient({
-        username: data.entityUsername,
-        pictureUrl: data.entityImg,
-        entityId: data.entityId,
-      });
-      setConversationData(data);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  } = useConversation(userData?.token, recipientId);
 
   useEffect(() => {
-    updateData(conversation);
+    setConversationData(conversation);
   }, [conversation]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchData = async () => {
-    if (userData?.token && recipient?.entityId) {
-      await getConversation(userData.token, recipient.entityId);
-    }
-  };
+  useEffect(() => {
+    scrollToBottom(recipientId, messagesContainerRef);
+  }, [conversationData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    const fetchData = async () => {
+      getConversation(userData?.token, recipientId);
+    };
+
     fetchData();
-  }, [userData?.token, recipient?.entityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
     const interval = setInterval(async () => {
       try {
         await fetchData();
       } catch (error) {
         console.log('Error fetching chat data.');
       }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, 2000);
 
-  async function submitMessageAndUpdate() {
+    return () => clearInterval(interval);
+  }, [recipientId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function submitMessageAndUpdate() {
     if (form.newMessage !== '') {
       try {
-        await postNewMessage(
-          userData?.token,
-          form.newMessage,
-          recipient?.entityId || 0
-        );
+        postNewMessage(userData?.token, form.newMessage, recipientId || 0);
         clearForm();
-
-        fetchData();
       } catch (err) {
         console.log('Failed to send message ):');
       }
@@ -118,9 +104,10 @@ export default function Conversation({
           pictureUrl: conversationData?.entityImg,
           username: conversationData?.entityUsername,
         }}
+        setRecipientId={setRecipientId}
       />
       <MessagesContainer>
-        <MessagesScroll>
+        <MessagesScroll ref={messagesContainerRef}>
           {conversationData?.messages?.map((message) => (
             <Message
               key={message.id}
