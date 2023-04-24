@@ -71,7 +71,7 @@ export default function Conversations({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
+    <StyledConversations>
       <StyledTitle>Conversations</StyledTitle>
       <StyledForm>
         <AllInputs spacing={0}>
@@ -96,21 +96,43 @@ export default function Conversations({
         </AllInputs>
       </StyledForm>
       {conversations && conversations.length > 0 ? (
-        conversations.map((chat) => (
-          <ConversationCard
-            key={chat.entityId}
-            chat={chat}
-            handleClick={() => {
-              setRecipientId(chat.entityId);
-            }}
-          />
-        ))
+        <ConversationContainer>
+          <ConversationScroll>
+            {conversations.map((chat) => (
+              <ConversationCard
+                key={chat.entityId}
+                chat={chat}
+                handleClick={() => {
+                  setRecipientId(chat.entityId);
+                }}
+              />
+            ))}
+          </ConversationScroll>
+        </ConversationContainer>
       ) : (
         <NoConversation />
       )}
-    </>
+    </StyledConversations>
   );
 }
+const StyledConversations = styled.div`
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+`;
+
+const ConversationContainer = styled.div`
+  flex-grow: 1;
+
+  position: relative;
+  overflow-y: scroll;
+`;
+
+const ConversationScroll = styled.div`
+  position: absolute;
+  width: 100%;
+`;
 
 const StyledTitle = styled.div`
   font: ${({ theme }) => `1.5rem ${theme.fonts.body}`};

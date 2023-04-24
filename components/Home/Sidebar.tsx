@@ -25,9 +25,12 @@ const StyledSidebar = styled.div<{ display?: boolean }>`
   border-right: ${({ theme }) =>
     `0.1rem solid ${theme.colors.light.secondary}`};
 
+  display: flex;
+  flex-direction: column;
+
   @media screen and (max-width: 800px) {
     width: 100%;
     border-right: none;
-    display: ${({ display }) => (display ? 'block' : 'none')};
+    display: ${({ display }) => (display ? 'flex' : 'none')};
   }
 `;
