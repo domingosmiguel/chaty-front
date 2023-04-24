@@ -3,7 +3,6 @@ import useConversation from '@/hooks/api/useConversation';
 import useNewMessage from '@/hooks/api/useNewMessage';
 import useForm from '@/hooks/useForm';
 import { FullChatData } from '@/services/messagesApi';
-import { UsersSearch } from '@/services/userApi';
 import { EmailIcon } from '@chakra-ui/icons';
 import {
   Input,
@@ -11,26 +10,14 @@ import {
   InputLeftElement,
   InputRightElement,
 } from '@chakra-ui/react';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MainButton from '../mainButton';
 import ChatUserCard from './ChatUserCard';
 import Message from './Message';
 
-export default function Conversation({
-  recipient,
-  setRecipient,
-}: {
-  recipient: UsersSearch | undefined;
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
-}) {
+export default function Conversation({ recipientId }: { recipientId: number }) {
+  console.log('🚀 ~ file: Conversation.tsx:34 ~ recipient:', recipientId);
   const { userData } = useContext(userContext);
   const [form, setForm, clearForm] = useForm({
     newMessage: '',
@@ -46,43 +33,29 @@ export default function Conversation({
     conversationLoading,
     conversationError,
     getConversation,
-  } = useConversation(userData?.token, recipient?.entityId);
-
-  const updateData = useCallback((data: FullChatData | null) => {
-    if (data) {
-      setRecipient({
-        username: data.entityUsername,
-        pictureUrl: data.entityImg,
-        entityId: data.entityId,
-      });
-      setConversationData(data);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  } = useConversation(userData?.token, recipientId);
 
   useEffect(() => {
-    updateData(conversation);
+    setConversationData(conversation);
   }, [conversation]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchData = async () => {
-    if (userData?.token && recipient?.entityId) {
-      await getConversation(userData.token, recipient.entityId);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      getConversation(userData?.token, recipientId);
+    };
+
     fetchData();
-  }, [userData?.token, recipient?.entityId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
     const interval = setInterval(async () => {
       try {
         await fetchData();
       } catch (error) {
         console.log('Error fetching chat data.');
       }
-    }, 3000);
+    }, 2000);
+
     return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recipientId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function submitMessageAndUpdate() {
     if (form.newMessage !== '') {
@@ -90,11 +63,9 @@ export default function Conversation({
         await postNewMessage(
           userData?.token,
           form.newMessage,
-          recipient?.entityId || 0
+          recipientId || 0
         );
         clearForm();
-
-        fetchData();
       } catch (err) {
         console.log('Failed to send message ):');
       }

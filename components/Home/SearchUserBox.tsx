@@ -10,11 +10,11 @@ import styled from 'styled-components';
 import UserCard from './UserCard';
 
 export default function SearchUserBox({
-  setRecipient,
+  setRecipientId,
   display,
   setDisplay,
 }: {
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
   display: boolean;
   setDisplay: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -68,7 +68,11 @@ export default function SearchUserBox({
         </AllInputs>
       </StyledForm>
       {searchResults?.map((user) => (
-        <UserCard key={user.entityId} setRecipient={setRecipient} user={user} />
+        <UserCard
+          key={user.entityId}
+          setRecipientId={setRecipientId}
+          user={user}
+        />
       ))}
     </StyledSearchUserBox>
   );

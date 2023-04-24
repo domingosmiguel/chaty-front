@@ -1,4 +1,3 @@
-import { UsersSearch } from '@/services/userApi';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import Conversations from './Conversations';
@@ -6,15 +5,15 @@ import UsernameAndPicture from './UsernameAndPicture';
 
 export default function Sidebar({
   display,
-  setRecipient,
+  setRecipientId,
 }: {
   display: boolean;
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
 }) {
   return (
     <StyledSidebar display={display}>
-      <UsernameAndPicture setRecipient={setRecipient} />
-      <Conversations setRecipient={setRecipient} />
+      <UsernameAndPicture setRecipientId={setRecipientId} />
+      <Conversations setRecipientId={setRecipientId} />
     </StyledSidebar>
   );
 }

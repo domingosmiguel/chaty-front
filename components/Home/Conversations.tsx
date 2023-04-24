@@ -3,7 +3,6 @@ import userContext from '@/context/userContext';
 import useConversations from '@/hooks/api/useConversations';
 import useForm from '@/hooks/useForm';
 import { ChatSample } from '@/services/messagesApi';
-import { UsersSearch } from '@/services/userApi';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Input, InputLeftElement } from '@chakra-ui/react';
 import {
@@ -19,9 +18,9 @@ import ConversationCard from './ConversationCard';
 import NoConversation from './NoConversation';
 
 export default function Conversations({
-  setRecipient,
+  setRecipientId,
 }: {
-  setRecipient: Dispatch<SetStateAction<UsersSearch | undefined>>;
+  setRecipientId: Dispatch<SetStateAction<number>>;
 }) {
   const [form, setForm] = useForm({
     searchMessages: '',
@@ -102,9 +101,7 @@ export default function Conversations({
             key={chat.entityId}
             chat={chat}
             handleClick={() => {
-              setRecipient({
-                entityId: chat.entityId,
-              });
+              setRecipientId(chat.entityId);
             }}
           />
         ))
